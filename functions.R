@@ -40,9 +40,11 @@ add_pubmed_method_hippie <- function(hippie){
   return(hippie_parsing)
 }
 
-#############################################################
+################################################################
 # function that retrieves only reviewed uniprotID
-#############################################################
+# hippie: dataframe
+# uniprot_reviewed: dataframe that includes reviewed uniprotIDs
+################################################################
 filter_hippie <- function(hippie,uniprot_reviewed){
   
   # retrieve the reviewed ID when there are multiple entry_names
@@ -82,6 +84,7 @@ filter_hippie <- function(hippie,uniprot_reviewed){
 
 ##########################################################
 # intact parsing: only human proteins
+# intact: dataframe
 ##########################################################
 
 intact_parsing <- function(d){
@@ -144,6 +147,8 @@ intact_parsing <- function(d){
 
 ###############################################################
 # retrieve only the revied UniprotIDs from IntAct
+# intact: dataframe
+# uniprot_reviewed: dataframe that includes reviewed uniprotIDs
 ###############################################################
 filter_intact <- function(intact,uniprot_reviewed){
   
@@ -349,9 +354,17 @@ get_numInter_studies <- function(network,pubmed){
   return(table)
 }
 
-#########################################################################
+##########################################################################################
 # function that calculate the degree distribution of each study
-#########################################################################
+# networks= datagrame
+# studies = vector of studies to be calculated the power law
+# table = dataframe with the studies and number of PPIs
+# label = string of output file
+# dir = directory to save the output
+# n = number of minimum PPIs
+# nRemove = threshold used to remove studies with NAs in random distributions (bootstrap)
+# tr = number of threads
+#########################################################################################
 
 calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemove,tr){
   
@@ -417,6 +430,9 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
 ##############################################################################
 # function that calculates the number of power law and non-power law studies
 # and the ratio between non-power law and power
+# table= dataframe of power law p-value for single study
+# table_numInter = dataframe of studies and PPIs
+# num = number of PPIs threshold
 ##############################################################################
 
 get_nPower_nonPower_table <- function(table,table_numInter,num){
@@ -444,9 +460,11 @@ get_nPower_nonPower_table <- function(table,table_numInter,num){
   return(final_table)
 }
 
-################################################
+#########################################################################
 # function to add methods to each pubmedID
-################################################
+# it counts how many interactions are detected for each method
+# and for each study it assigns the method with the highest frequency
+#########################################################################
 
 add_methods <- function(final_table,network, type = 'method'){
   
@@ -511,6 +529,7 @@ add_number_baits_preys <- function(intact,final_table){
 
 #################################################
 # check if there are more baits than preys
+# s = pubmedID
 #################################################
 
 check_numberBaits_preys <- function(table_input,s){
@@ -733,6 +752,7 @@ calculate_degree_y2h_study <- function(intact,s){
 
 #######################################################################
 # clusterProfiler analyses
+# genes and background: list of entrezIDs
 ######################################################################
 
 clusterProfiler_analyses <- function(genes,background,p = 0.05,n,label,o,dir_out){
