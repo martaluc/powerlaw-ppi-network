@@ -113,3 +113,19 @@ ggplot(data=table_ratio, aes(x=num_inter, y=ratio)) +
   scale_x_continuous(labels = table_ratio$num_inter,breaks = table_ratio$num_inter) +
   theme(axis.text = element_text(size = 10), axis.title = element_text(size = 10)) + theme_bw()
 ggsave(paste0('plots/plot_numInter_ratio_HIPPIEunionIntact2022.pdf'),height = 8, width = 13,units = 'cm')
+
+#------------------------------------------------------------------------
+# histogram of PPIs number of studies
+#------------------------------------------------------------------------
+
+table_study <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv')
+table_study <- table_study[-which(table_study$num_inter == 0),]
+
+NotFancy <- function(l) {
+  l <- format(l, scientific = F)
+  parse(text=l)
+}
+
+ggplot(table_study, aes(x=num_inter)) + geom_histogram(binwidth = 1) + scale_x_continuous(trans='log10', labels = NotFancy) + xlab('Number of PPIs') + ylab('Number of studies') +
+  theme(axis.text = element_text(size = 1), axis.title = element_text(size = 1)) + theme_bw()
+ggsave('plots/plot_ppis_numStudies.pdf', height = 10, width = 10, units = 'cm')
