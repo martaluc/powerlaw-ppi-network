@@ -2,6 +2,8 @@
 
 Analyze the power-law property in protein-protein interaction (PPI) networks
 
+The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
+
 #### Clone the repository
 
 ```
