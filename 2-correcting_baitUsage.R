@@ -26,7 +26,10 @@ ninter <- 2
 table_study <- read.csv(paste0('output/degree_distr_singleStudy_Intact_ninter_',ninter,'_noNA_10.csv'))
 #select only power law studies
 table_power <- table_study[which(table_study$pvalue >= 0.1),]
-table_power <- table_power[-which(table_power$n_baits == table_power$n_preys),]
+# eliminate studies with 0 baits and 0 preys
+table_power <- table_power[-which(table_power$n_baits == 0 & table_power$n_preys == 0),]
+# eliminate studies with 1 baits and 1 preys
+table_power <- table_power[-which(table_power$n_baits == 1 & table_power$n_preys == 1),]
 calculate_new_degree_table(intact,table_power,ninter,10,10,'output')
 
 

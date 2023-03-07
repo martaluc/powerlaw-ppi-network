@@ -536,7 +536,7 @@ check_numberBaits_preys <- function(table_input,s){
   nbaits <- table_input$n_baits[which(table_input$pubmedID == s)]
   npreys <- table_input$n_preys[which(table_input$pubmedID == s)]
   
-  if(nbaits < npreys){
+  if(nbaits <= npreys){
     label <- 'bait'
   }else{
     label <- 'prey'
