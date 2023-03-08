@@ -14,7 +14,7 @@ Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (datab
 #### Description
 The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
-1-aggregated_network.R calculates the degree and the bait distribution of our aggregated PPI network (Figure 2A and Figure 3B). It also tests the power-law property of each single-study (Figure 2B).
+1-aggregated_network.R calculates the degree and the bait distribution of our aggregated PPI network (Figure 2A and Figure 3B). It also tests the power-law property of each single study (Figure 2B).
 
 2-correcting_baitUsage.R analyzes if the asymmetric design (i.e. number of baits and preys) affects the power-law property (Figure 4B and C).
 
