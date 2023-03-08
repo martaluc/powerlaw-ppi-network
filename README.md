@@ -22,6 +22,8 @@ The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
 4-hubs.R calculates the hubs and performs the functional and disease enrichment analyses (Figure 5).
 
+The results of the scripts are saved in the `output/` folder and the plots in the `plots/` folder.
+
 
 ###### Notes
 Use the same number of threads as specified in the code to obtain the exact same p-values (when testing the power law property).
