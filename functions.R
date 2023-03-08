@@ -146,7 +146,7 @@ intact_parsing <- function(d){
 }
 
 ###############################################################
-# retrieve only the revied UniprotIDs from IntAct
+# retrieve only the reviwed UniprotIDs from IntAct
 # intact: dataframe
 # uniprot_reviewed: dataframe that includes reviewed uniprotIDs
 ###############################################################
@@ -177,9 +177,9 @@ filter_intact <- function(intact,uniprot_reviewed){
 }
 
 #########################################################################################
-# function that retrievs the indeces of duplicated bidirectional edges (ex: A--B; B--A)
+# function that retrieves the indices of duplicated bidirectional edges (ex: A--B; B--A)
 # input: network database with two columns
-# output: indeces of duplicated edges
+# output: indices of duplicated edges
 ########################################################################################
 index_edges_duplicates <- function(network,verbose = F){
   xx <- cbind(as.character(network[, 1]), as.character(network[,2]))
@@ -251,6 +251,8 @@ check_powerLaw <- function(data, plot = F, plot_name ='', t = 1, xlabel, myseed=
 
 ###############################################################
 # functions that estimates the xmin in the power law fitting
+# data: numeric vector (ex: degree vector)
+# output: estimated xmin
 ###############################################################
 
 xmin_estimated <- function(data){
@@ -263,6 +265,8 @@ xmin_estimated <- function(data){
 
 ###########################################################################
 # functions that estimates the alpha (exponent) in the power law fitting
+# data: numeric vector (ex: degree vector)
+# output: estimated alpha
 ##########################################################################
 
 alpha_estimated <- function(data){
@@ -324,11 +328,13 @@ calculate_bait_usage <- function(intact,baits,label){
   return(f)
 }
 
-##########################################################################
+##############################################################################################################
 # calculate the number of interactions (PPIs) for each study
-# network: dataframe
-# pubmed: vector of pubmedIDs
-###########################################################################
+# input:
+# - network: dataframe
+# - pubmed: vector of pubmedIDs
+# output: matrix including for each study (pubmedID) the number of interactions and the number of proteins
+##############################################################################################################
 
 get_numInter_studies <- function(network,pubmed){
   
@@ -343,7 +349,6 @@ get_numInter_studies <- function(network,pubmed){
     if(length(d_index) > 0){
       p <- p[-d_index,]
       print(i)
-      #print(paste0('there are ',length(d_index),' bidirectional edges with the same pubmedID'))
     }
     pubmedID <- c(pubmedID,i)
     num_inter <- c(num_inter,nrow(p))
@@ -356,14 +361,18 @@ get_numInter_studies <- function(network,pubmed){
 
 ##########################################################################################
 # function that calculate the degree distribution of each study
-# networks= datagrame
-# studies = vector of studies to be calculated the power law
-# table = dataframe with the studies and number of PPIs
-# label = string of output file
-# dir = directory to save the output
-# n = number of minimum PPIs
-# nRemove = threshold used to remove studies with NAs in random distributions (bootstrap)
-# tr = number of threads
+# input:
+# - networks= datagrame
+# - studies = vector of studies to be calculated the power law
+# - table = dataframe with the studies and number of PPIs
+# - label = string of output file
+# - dir = directory to save the output
+# - n = number of minimum PPIs
+# - nRemove = threshold used to remove studies with NAs in random distributions (bootstrap): we used 10%
+# - tr = number of threads
+# output: data frame including for each study (pubmedID), p-value, estimated xmin, 
+# number of values > xmin (ntail), number of proteins, number of unique degree values,
+# goodness-of-fit (gof), and estimated alpha. The output is saved in a csv file
 #########################################################################################
 
 calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemove,tr){
@@ -379,10 +388,7 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
   alpha <- c()
   studies_na_10 <- c()
   
-  # if(!dir.exists(paste0(dir,'/plot_eachStudy'))){
-  #   dir.create(paste0(dir,'/plot_eachStudy'))
-  # }
-  
+  # for each study it tests the power-law property
   for(i in studies){
     print(i)
     g <- unique(network[which(network$Publication_Identifiers == i),c('IDs_interactor_A','IDs_interactor_B')])
@@ -393,6 +399,7 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
     }
     p <- check_powerLaw(degree$degree, plot = F, plot_name = paste0(dir,'/plot_eachStudy/plot_pubmedID ',i), t = tr, 'Degree',myseed = 1)
     
+    # studies_na_10 includes studies with more than 10% NAs
     s <- summary(degree$degree)
     if(length(which(is.na(p$bootstraps$xmin) == T)) >= nRemove){
       studies_na_10 <- c(studies_na_10,i)
@@ -404,10 +411,6 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
     ntail <- c(ntail,length(which(degree >= xmin_estimated(degree$degree))))
     len_degree <- c(len_degree,length(degree$degree))
     
-    # png(paste0(dir,'/plot_eachStudy/histogram_pubmedID_',i,'.png'))
-    # hist(degree$degree, probability = T, xlab = 'degree')
-    # lines(density(degree$degree))
-    # dev.off()
     pvalue <- c(pvalue,p$p)
     gof <- c(gof,p$gof)
     pubmedID <- c(pubmedID,i)
@@ -417,7 +420,6 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
   final_table <- as.data.frame(cbind(pubmedID,pvalue,xmin_est,xmax,ntail,len_degree,unique_degree,gof,alpha))
   final_table$n_inter <- table$num_inter[match(final_table$pubmedID,table$pubmedID)]
   final_table$methods <-  table$methods[match(final_table$pubmedID,table$pubmedID)]
-  #write.csv(final_table, file = paste0(dir,'/degree_distr_singleStudy_',label,'_ninter_',n,'.csv'), row.names = F)
   
   if(length(studies_na_10) != 0){
     final_table_noNA_10 <- final_table[-which(final_table$pubmedID %in% studies_na_10),]
@@ -429,10 +431,13 @@ calculate_degree_singleStudy <- function(network,studies,table,label,dir,n,nRemo
 
 ##############################################################################
 # function that calculates the number of power law and non-power law studies
-# and the ratio between non-power law and power
-# table= dataframe of power law p-value for single study
-# table_numInter = dataframe of studies and PPIs
-# num = number of PPIs threshold
+# and the ratio between non-power law and power-law studies
+# input:
+# - table= dataframe of power law p-value for single study
+# - table_numInter = dataframe of studies and PPIs
+# - num = number of PPIs threshold
+# output: data frame which includes the number of non-power law, power-law studies
+# with more than a certain number of PPIs specified in 'num'
 ##############################################################################
 
 get_nPower_nonPower_table <- function(table,table_numInter,num){
@@ -461,9 +466,13 @@ get_nPower_nonPower_table <- function(table,table_numInter,num){
 }
 
 #########################################################################
-# function to add methods to each pubmedID
+# function that adds methods to each pubmedID
 # it counts how many interactions are detected for each method
 # and for each study it assigns the method with the highest frequency
+# input:
+# - final_table: table that includes the number of PPIs for each study
+# - network: data frame of the network
+# output: final_table with an extra column (methods)
 #########################################################################
 
 add_methods <- function(final_table,network, type = 'method'){
@@ -505,9 +514,14 @@ add_methods <- function(final_table,network, type = 'method'){
   return(final_table)
 }
 
-##########################################################
-# add number of baits and prey to the degree dist table
-#########################################################
+######################################################################################
+# add number of baits and prey
+# input: 
+# - intact: data frame of intact database
+# - final_table: table including the p-value of each study
+# output: final_table with three extra columns (number of baits, number of preys 
+# and number of common baits and preys)
+######################################################################################
 
 add_number_baits_preys <- function(intact,final_table){
   n_baits <- c()
@@ -530,6 +544,8 @@ add_number_baits_preys <- function(intact,final_table){
 #################################################
 # check if there are more baits than preys
 # s = pubmedID
+# output: 'bait' if the number of baits <= prey or 
+# 'prey' if the number of preys < baits
 #################################################
 
 check_numberBaits_preys <- function(table_input,s){
@@ -546,8 +562,14 @@ check_numberBaits_preys <- function(table_input,s){
 
 #####################################################################################################
 # function that calculates the degree without considering interactions where a protein has been
-# tested as a bait or prey
+# tested as a bait or prey (see Methods of the manuscript)
+# input:
+# - human_data_study: network for a specific study
+# - degree: vector of degree
+# - label: 'bait' or 'prey'
+# output: vector of the degree recalculation after correcting for bait usage
 ####################################################################################################
+
 calculate_degree_bis <- function(human_data_study,degree,label){
   
   degree_bis <- c()
@@ -578,9 +600,15 @@ calculate_degree_bis <- function(human_data_study,degree,label){
 }
 
 
-#################################################
-# calculate the degree bis for all the studies
-#################################################
+################################################################################################################
+# add some information to the final table that includes the degree recalculation
+# input:
+# - human_data: dataframe of the network
+# - final_table: dataframe that includes the p-value of the degree for each powerlaw study after the correction
+# - table_input: dataframe that includes only power-law studies with the associated p-value
+# output: final_table that includes (besides its original columns), the p-value before degree correction,
+# number of baits, number of preys, number of interactions
+#################################################################################################################
 
 add_info_degreeBis_table <- function(human_data,final_table,table_input){
   
@@ -599,9 +627,16 @@ add_info_degreeBis_table <- function(human_data,final_table,table_input){
   
   return(final_table)
 }
-###############################################################################
+###############################################################################################
 # function that calculates the degree after correction
-###############################################################################
+# input:
+# - human_data: dataframe of the network
+# - table_input: dataframe that includes only power-law studies with the associated p-value
+# - ninter: 2
+# - nRemove: threshold used to remove studies with NAs in random distributions (bootstrap): we used 10%
+# - tr: number of threads
+# - dir_out: directory where the output is saved
+###############################################################################################
 
 calculate_new_degree_table <- function(human_data,table_input,ninter,nRemove,tr,dir_out){
   pvalue <- c()
@@ -610,13 +645,7 @@ calculate_new_degree_table <- function(human_data,table_input,ninter,nRemove,tr,
   xmin <- c()
   studies_na_10 <- c()
   n_changeDegree_proteins <- c()
-  
-  # if(!dir.exists('degree_bis')){
-  #   dir.create('degree_bis')
-  # }
-  # if(!dir.exists('plot_degree_bis')){
-  #   dir.create('plot_degree_bis')
-  # }
+
   
   studies <- table_input$pubmedID
   for(s in studies){
@@ -633,7 +662,6 @@ calculate_new_degree_table <- function(human_data,table_input,ninter,nRemove,tr,
     degree$degree_bis <- degree_bis
     #write.csv(degree, file = paste0('degree_bis/degree_bis_',s,'.csv'),row.names = F)
     
-    #if there are 0 degree
     if(length(which(degree$degree_bis == 0)) != 0){
       if(is.na(xmin_estimated(degree$degree_bis[-which(degree$degree_bis == 0)]))){
         print(paste0('Unable to estimate xmin for ',s,' study \n'))
@@ -673,9 +701,15 @@ calculate_new_degree_table <- function(human_data,table_input,ninter,nRemove,tr,
   #return(final_table)
 }
 
-##############################################
-# wilcoxon to test the difference of ratio 
-##############################################
+################################################################################
+# wilcoxon to test the difference of size balance between studies that switch
+# from power-law to non-power law and those that still remain power-law
+# input:
+# - final_table = dataframe that includes p-value for each study
+# - plot_name = name of the plot
+# - ninter= threshold of the number of interactions
+# - dir_out= directory where the plot is saved
+###############################################################################
 
 wilcox_test_ratio <- function(final_table,plot_name,ninter,dir_out){
   
@@ -699,9 +733,12 @@ wilcox_test_ratio <- function(final_table,plot_name,ninter,dir_out){
 }
 
 
-########################################################################
-# function to calculate the prey usage in mass Spectrometry method
-#########################################################################
+########################################################################################
+# function to calculate the prey usage and the prey degree in mass Spectrometry method
+# input: dataframe of network
+# output: dataframe including uniprotIDs, symbols, prey usage, degree of 
+#         proteins used as prey
+######################################################################################
 
 get_prey_massSpec <- function(human_data){
   
@@ -723,9 +760,13 @@ get_prey_massSpec <- function(human_data){
   return(prey_usage)
 }
 
-#################################
+#################################################################################################################
 # calculate degree y2h study
-################################
+# input:
+# - intact: dataframe of the network
+# - s = pubmedID of interest
+# output: dataframe that includes the degree for each protein (both gene symbol and uniprotID) in the study 
+###################################################################################################################
 
 calculate_degree_y2h_study <- function(intact,s){
   
@@ -750,10 +791,15 @@ calculate_degree_y2h_study <- function(intact,s){
   return(degree)
 }
 
-#######################################################################
-# clusterProfiler analyses
-# genes and background: list of entrezIDs
-######################################################################
+##############################################################################
+# clusterProfiler analyses: GO, DO, KEGG and Reactome 
+# input:
+# - genes and background= list of entrezIDs
+# - n= number of hubs
+# - label= string of the kind of approach we used to detect hubs
+# - o= ontology (used only in Gene Ontology analysis)
+# - dir_out= directory where the output of the enrichment analysis is saved
+##############################################################################
 
 clusterProfiler_analyses <- function(genes,background,p = 0.05,n,label,o,dir_out){
   
