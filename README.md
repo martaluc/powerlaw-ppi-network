@@ -20,7 +20,7 @@ The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
 3-merging_studies.R tests if the power-law property emerges from the aggregation of non-power law studies (Figure 3A).
 
-4-hubs.R calculates the hubs and performs the functional and disease enrichment analyses (Figure 5).
+4-hubs.R detects the hubs and performs the functional and disease enrichment analyses (Figure 5).
 
 The results of the scripts are saved in the `output/` folder and the plots in the `plots/` folder.
 
