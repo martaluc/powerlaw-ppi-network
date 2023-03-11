@@ -33,14 +33,23 @@ write.csv(degree_32296183, file = paste0(dir_out,'/Y2H_hubs.csv'), row.names = F
 
 # hubs normalized bait degree
 bait_table <- read.csv('output/bait_usage_intact2022.csv')
-bait_table <- bait_table[order(-bait_table$normaliz_bait),]
-write.csv(bait_table, file = paste0(dir_out,'/hubs_normal_bait.csv'), row.names = F)
-
-# hubs of HIPPIEunionIntact
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
 g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
 degree_hippie_intact <- degree_wo_bidirEdges(g)
 degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
+bait_table$degree <- degree_hippie_intact$degree[match(bait_table$bait_uniprot,degree_hippie_intact$proteins)]
+bait_table$normaliz_degree <- bait_table$degree/bait_table$bait_usage
+bait_table <- bait_table[order(-bait_table$normaliz_degree),]
+
+# bait_table <- read.csv('output/bait_usage_intact2022.csv')
+# bait_table <- bait_table[order(-bait_table$normaliz_bait),]
+write.csv(bait_table, file = paste0(dir_out,'/hubs_normal_bait.csv'), row.names = F)
+
+# hubs of HIPPIEunionIntact
+# hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
+# g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
+# degree_hippie_intact <- degree_wo_bidirEdges(g)
+# degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
 degree_hippie_intact <- degree_hippie_intact[order(-degree_hippie_intact$degree),]
 symbol <- as.data.frame(mapIds(org.Hs.eg.db, keys = degree_hippie_intact$proteins, keytype = "UNIPROT", column= "SYMBOL"))
 colnames(symbol)[1] <- 'symbol'
@@ -84,8 +93,9 @@ clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entre
 clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 0.05, n,'Y2H_hubs','BP','output')
 clusterProfiler_analyses(entrez_agg$entrezID[seq(1,n)],unique(entrez_agg$entrezID),p = 0.05, n,'Aggregated_network','BP','output')
 
-
-
+# run to know how many genes are annotated in databases for those sets where no significant enrichment has been found 
+clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 1, n,'Y2H_hubs','BP','output')
+clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entrezID),p = 1, n,'normalized_hubs','BP','output')
 #---------------------------------------------  
 # plot the results of the enrichment analyses
 #---------------------------------------------
@@ -136,6 +146,29 @@ for(d in dirs){
   ggsave(filename = paste0(d,'/dotplot_',unlist(strsplit(strsplit(d, split = '/')[[1]][2],split = '_'))[1],'_n',n,'_qvalue',p,'.pdf'),height = 15, width = 10,units = 'cm')
   rm(list = ls(all.names = TRUE))
 }
+
+# to generate figure for paper
+# if(d == 'output/enrichGO_results'){
+#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/41',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],5,'Y2H hubs'))
+# }
+# if(d == 'output/enrichDO_results'){
+#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/18',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Y2H hubs'),
+#               c(t$ID[1],t$Description[1],'1/22',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Normalized hubs'))
+# }
+# if(d == 'output/enrichKEGG_results'){
+#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/12',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Y2H hubs'),
+#               c(t$ID[1],t$Description[1],'1/12',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Normalized hubs'))
+# }
+# 
+# t1$Cluster <- factor(t1$Cluster, levels = c('Uncorrected aggregated \n network hubs','Prey hubs','Normalized hubs','Y2H hubs'))
+# t1$pvalue <- as.numeric(t1$pvalue)
+# t1$p.adjust <- as.numeric(t1$p.adjust)
+# t1$qvalue <- as.numeric(t1$qvalue)
+# res <- new("compareClusterResult", compareClusterResult = t1, .call = match.call(expand.dots = TRUE))
+# dotplot(res, font.size = 7, label_format = 30, color = 'qvalue') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5))
+# ggsave(filename = paste0(d,'/dotplot_',strsplit(unlist(strsplit(d, split = '_'))[1],'/')[[1]][2],'_n',n,'_qvalue',p,'_paper.pdf'),height = 15, width = 10,units = 'cm')
+
+
 
 #----------------------------------------------------------------------
 # enrichment between schizophrenia/psychotic disorder and chaperones
@@ -219,7 +252,8 @@ for(t in term){
   print(m)
   f <- fisher.test(m)
   f_greater <- fisher.test(m, alternative = 'greater')
-  print(f$p.value)
+  #print(f$p.value)
+  print('Fisher test p-value')
   print(f_greater$p.value)
 }
 

@@ -15,7 +15,7 @@ hippie <- filter_hippie(hippie,uniprot_reviewed)
 # read IntAct
 #----------------
 
-intact <- fread('intact.txt', quote = '')
+intact <- fread('databases/intact.txt', quote = '')
 intact <- intact_parsing(intact)
 intact <- filter_intact(intact,uniprot_reviewed)
 write.csv(intact,'databases/IntAct_afterFiltering.csv',row.names = F)
@@ -83,6 +83,7 @@ print(paste0('ntail is: ',length(which(degree_hippie_intact$degree >= xmin_estim
 #-----------------------------------------------------------------------
 
 pubmed <- unique(hippie_intact$Publication_Identifiers)
+pubmed <- pubmed[-which(is.na(pubmed) == T)]
 table <- get_numInter_studies(hippie_intact,pubmed)
 write.csv(table, file = 'output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv',row.names = F)
 
@@ -119,7 +120,7 @@ ggsave(paste0('plots/plot_numInter_ratio_HIPPIEunionIntact2022.pdf'),height = 8,
 #------------------------------------------------------------------------
 
 table_study <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv')
-table_study <- table_study[-which(table_study$num_inter == 0),]
+#table_study <- table_study[-which(table_study$num_inter == 0),]
 
 NotFancy <- function(l) {
   l <- format(l, scientific = F)
@@ -129,3 +130,17 @@ NotFancy <- function(l) {
 ggplot(table_study, aes(x=num_inter)) + geom_histogram(binwidth = 1) + scale_x_continuous(trans='log10', labels = NotFancy) + xlab('Number of PPIs') + ylab('Number of studies') +
   theme(axis.text = element_text(size = 1), axis.title = element_text(size = 1)) + theme_bw()
 ggsave('plots/plot_ppis_numStudies.pdf', height = 10, width = 10, units = 'cm')
+
+#---------------------------------------------------------
+### correlation between degree and bait usage
+#---------------------------------------------------------
+
+bait_usage <- read.csv('output/bait_usage_intact2022.csv')
+hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
+g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
+degree_hippie_intact <- degree_wo_bidirEdges(g)
+degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
+
+bait_usage$degree <- degree_hippie_intact$degree[match(bait_usage$bait_uniprot,degree_hippie_intact$proteins)]
+print('Pearson correlation between degree and bait usage')
+cor.test(bait_usage$bait_usage,bait_usage$degree, method = 'pearson') # 0.57

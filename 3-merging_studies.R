@@ -1,6 +1,8 @@
 source('functions.R')
 library(doParallel)
 
+# ATTENTION: reproducing these results might take several days depending on the computational infrastructure.
+
 table <- read.csv('output/degree_distr_singleStudy_HIPPIEunionIntact2022_ninter_2_noNA_10.csv')
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
 npl_studies <- table$pubmedID[which(table$pvalue < 0.1)]
@@ -14,6 +16,7 @@ dir_out <- 'output/'
 nstudy <- c(100,200,300)
 
 n <- 1000
+n <- 2
 tr <- 2
 network <- hippie_intact
 
@@ -30,14 +33,14 @@ for(j in nstudy){
     print(sort(studies))
     network_studies <- network[which(network$Publication_Identifiers %in% studies),]
     n_protein <- length(union(network_studies$IDs_interactor_A,network_studies$IDs_interactor_B))
-    
+
     #calculate the number of interactions
     d_index <- index_edges_duplicates(network_studies[,c('IDs_interactor_A','IDs_interactor_B')])
-    #eliminate bidirectional edges with the same pubmedID
+    #eliminate bidirectional edges
     if(length(d_index) > 0){
       r <- network_studies[-d_index,]
     }
-    
+
     g <- unique(network_studies[,c('IDs_interactor_A','IDs_interactor_B')])
     degree <- degree_wo_bidirEdges(g)
     s <- paste0(sort(studies), collapse = ',')
@@ -50,7 +53,7 @@ for(j in nstudy){
       ntail <- length(which(degree$degree >= xmin_estimated(degree$degree)))
       result <- c(p$p,nrow(r),n_protein,xmin,alpha,ntail,s)
     }
-    
+
   }
   colnames(f) <- c('pvalue','num_inter','n_proteins','xmin','alpha','ntail','pubmedIDs')
   write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'degree.csv'),row.names = F)
@@ -107,7 +110,8 @@ studies_bait <- intersect(studies_bait,npl_studies)
 print(length(studies_bait))
 
 nstudy <- c(50,100,150)
-n <- 1000
+#n <- 1000
+n <- 2
 tr <- 2
 
 cl <- makeCluster(5, outfile="out.log")
@@ -181,4 +185,4 @@ bait_degree_npl <- length(which(table$pvalue_degree < 0.1 & table$pvalue_bait < 
 matrix <- matrix(c(bait_degree_pl,bait_pl_degree_npl,bait_npl_degree_pl,bait_degree_npl), ncol = 2,nrow = 2)
 matrix
 fisher.test(matrix)
-fisher.test(matrix, alternative = 'greater')
+print(fisher.test(matrix, alternative = 'greater'))

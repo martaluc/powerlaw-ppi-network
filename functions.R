@@ -811,9 +811,12 @@ clusterProfiler_analyses <- function(genes,background,p = 0.05,n,label,o,dir_out
   if(nrow(edo) != 0){
     write.csv(as.data.frame(edo),file = paste0(dir_out,'/enrichDO_results/table_enrichDO_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
   }
-  if(nrow(ekegg) != 0){
-    write.csv(as.data.frame(ekegg),file = paste0(dir_out,'/enrichKEGG_results/table_enrichKEGG_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
+  if(!is.null(ekegg)){
+    if(nrow(ekegg) != 0){
+      write.csv(as.data.frame(ekegg),file = paste0(dir_out,'/enrichKEGG_results/table_enrichKEGG_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
+    }
   }
+  
   if(nrow(epath) != 0){
     write.csv(as.data.frame(epath),file = paste0(dir_out,'/enrichPathway_results/table_enrichPathway_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
   }
