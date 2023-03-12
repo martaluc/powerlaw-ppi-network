@@ -41,8 +41,6 @@ bait_table$degree <- degree_hippie_intact$degree[match(bait_table$bait_uniprot,d
 bait_table$normaliz_degree <- bait_table$degree/bait_table$bait_usage
 bait_table <- bait_table[order(-bait_table$normaliz_degree),]
 
-# bait_table <- read.csv('output/bait_usage_intact2022.csv')
-# bait_table <- bait_table[order(-bait_table$normaliz_bait),]
 write.csv(bait_table, file = paste0(dir_out,'/hubs_normal_bait.csv'), row.names = F)
 
 # hubs of HIPPIEunionIntact
@@ -146,28 +144,6 @@ for(d in dirs){
   ggsave(filename = paste0(d,'/dotplot_',unlist(strsplit(strsplit(d, split = '/')[[1]][2],split = '_'))[1],'_n',n,'_qvalue',p,'.pdf'),height = 15, width = 10,units = 'cm')
   rm(list = ls(all.names = TRUE))
 }
-
-# to generate figure for paper
-# if(d == 'output/enrichGO_results'){
-#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/41',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],5,'Y2H hubs'))
-# }
-# if(d == 'output/enrichDO_results'){
-#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/18',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Y2H hubs'),
-#               c(t$ID[1],t$Description[1],'1/22',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Normalized hubs'))
-# }
-# if(d == 'output/enrichKEGG_results'){
-#   t1 <- rbind(t,c(t$ID[1],t$Description[1],'1/12',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Y2H hubs'),
-#               c(t$ID[1],t$Description[1],'1/12',t$BgRatio[1],t$pvalue[1],t$p.adjust[1],t$qvalue[1],t$geneID[1],1,'Normalized hubs'))
-# }
-# 
-# t1$Cluster <- factor(t1$Cluster, levels = c('Uncorrected aggregated \n network hubs','Prey hubs','Normalized hubs','Y2H hubs'))
-# t1$pvalue <- as.numeric(t1$pvalue)
-# t1$p.adjust <- as.numeric(t1$p.adjust)
-# t1$qvalue <- as.numeric(t1$qvalue)
-# res <- new("compareClusterResult", compareClusterResult = t1, .call = match.call(expand.dots = TRUE))
-# dotplot(res, font.size = 7, label_format = 30, color = 'qvalue') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5))
-# ggsave(filename = paste0(d,'/dotplot_',strsplit(unlist(strsplit(d, split = '_'))[1],'/')[[1]][2],'_n',n,'_qvalue',p,'_paper.pdf'),height = 15, width = 10,units = 'cm')
-
 
 
 #----------------------------------------------------------------------

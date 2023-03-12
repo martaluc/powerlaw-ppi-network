@@ -16,7 +16,7 @@ dir_out <- 'output/'
 nstudy <- c(100,200,300)
 
 n <- 1000
-n <- 2
+#n <- 2
 tr <- 2
 network <- hippie_intact
 
@@ -92,7 +92,7 @@ ggsave(paste0('plots/','boxplot_mergingNPL.pdf'),height = 10, width = 10,units =
 
 #------------------------------------------------------------------------------------
 # merge random non-PL studies (without selecting studies with specific features) 
-# and calculate degree and bait distribution (using only studies with bait and prey 
+# and calculate degree and bait distribution (using only studies with bait 
 # annotations)
 #------------------------------------------------------------------------------------
 intact <- read.csv('databases/IntAct_afterFiltering.csv')
@@ -110,8 +110,8 @@ studies_bait <- intersect(studies_bait,npl_studies)
 print(length(studies_bait))
 
 nstudy <- c(50,100,150)
-#n <- 1000
-n <- 2
+n <- 1000
+#n <- 2
 tr <- 2
 
 cl <- makeCluster(5, outfile="out.log")
@@ -158,7 +158,8 @@ for(j in nstudy){
   }
   colnames(f) <- c('pvalue_degree','pvalue_bait','num_inter','n_proteins','n_NA_degree','n_NA_bait')
   dir_out <- 'output'
-  write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022.csv'),row.names = F)
+  #write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022.csv'),row.names = F)
+  write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022_bis.csv'),row.names = F)
 }
 stopCluster(cl)
 

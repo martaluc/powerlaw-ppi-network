@@ -8,7 +8,7 @@ library(data.table)
 hippie <- read.table('databases/HIPPIE_14Feb2019.txt')
 hippie <- add_pubmed_method_hippie(hippie)
 uniprot_reviewed <- read.csv('databases/uniprot-compressed_true_download_true_fields_accession_2Creviewed_2C-2022.12.13-09.55.05.21.tsv', sep = '\t')
-#dim(uniprot_reviewed)
+dim(uniprot_reviewed)
 hippie <- filter_hippie(hippie,uniprot_reviewed)
 
 #----------------
@@ -18,7 +18,12 @@ hippie <- filter_hippie(hippie,uniprot_reviewed)
 intact <- fread('databases/intact.txt', quote = '')
 intact <- intact_parsing(intact)
 intact <- filter_intact(intact,uniprot_reviewed)
+length(unique(intact$Publication_Identifiers))
 write.csv(intact,'databases/IntAct_afterFiltering.csv',row.names = F)
+
+intact_bait_prey <- intact[which((intact$Experimental_roles_interactor_A == 'bait' & intact$Experimental_roles_interactor_B == 'prey') | (intact$Experimental_roles_interactor_A == 'prey' & intact$Experimental_roles_interactor_B == 'bait')),]
+# frequency of interactions with bait and prey annotation
+nrow(unique(intact_bait_prey))/nrow(unique(intact))
 
 #--------------------------
 # bait usage distribution
