@@ -158,8 +158,8 @@ for(j in nstudy){
   }
   colnames(f) <- c('pvalue_degree','pvalue_bait','num_inter','n_proteins','n_NA_degree','n_NA_bait')
   dir_out <- 'output'
-  #write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022.csv'),row.names = F)
-  write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022_bis.csv'),row.names = F)
+  write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022.csv'),row.names = F)
+  
 }
 stopCluster(cl)
 
