@@ -264,6 +264,7 @@ colnames(table_median_protein)[1] <- 'Gene_ID'
 table_median_protein$entrez_id <- gtex_mapping$entrez_id[match(table_median_protein$Gene_ID,gtex_mapping$ensembl_id)]
 # remove genes with more than 50% of NAs
 table_median_protein <- table_median_protein[-which(table_median_protein$n_NA > 0.5),]
+dim(table_median_protein)
 table_median_protein <- table_median_protein[order(-table_median_protein$Median),]
 table_median_protein <- table_median_protein[-which(table_median_protein$entrez_id == 'NA'),]
 
