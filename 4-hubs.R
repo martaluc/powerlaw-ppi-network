@@ -61,9 +61,9 @@ write.csv(degree_hippie_intact, file = paste0(dir_out,'/AggregatedNetwork_hubs.c
 if(!dir.exists('output/enrichDO_results')){
   dir.create('output/enrichDO_results')
 }
-if(!dir.exists('output/enrichKEGG_results')){
-  dir.create('output/enrichKEGG_results')
-}
+# if(!dir.exists('output/enrichKEGG_results')){
+#   dir.create('output/enrichKEGG_results')
+# }
 if(!dir.exists('output/enrichPathway_results')){
   dir.create('output/enrichPathway_results')
 }
@@ -92,13 +92,13 @@ clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezI
 clusterProfiler_analyses(entrez_agg$entrezID[seq(1,n)],unique(entrez_agg$entrezID),p = 0.05, n,'Aggregated_network','BP','output')
 
 # run to know how many genes are annotated in databases for those sets where no significant enrichment has been found 
-clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 1, n,'Y2H_hubs','BP','output')
-clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entrezID),p = 1, n,'normalized_hubs','BP','output')
+# clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 1, n,'Y2H_hubs','BP','output')
+# clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entrezID),p = 1, n,'normalized_hubs','BP','output')
 #---------------------------------------------  
 # plot the results of the enrichment analyses
 #---------------------------------------------
 
-dirs <- c('output/enrichGO_results','output/enrichDO_results','output/enrichPathway_results','output/enrichKEGG_results')
+dirs <- c('output/enrichGO_results','output/enrichDO_results','output/enrichPathway_results')
 for(d in dirs){
   print(d)
   n <- 50

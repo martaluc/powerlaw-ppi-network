@@ -804,18 +804,18 @@ calculate_degree_y2h_study <- function(intact,s){
 clusterProfiler_analyses <- function(genes,background,p = 0.05,n,label,o,dir_out){
   
   edo <- enrichDO(genes,ont = "DO",qvalueCutoff = p, pvalueCutoff =p, pAdjustMethod = "fdr",universe = background,minGSSize = 2,readable= TRUE)
-  ekegg <- enrichKEGG(genes,organism = "hsa",keyType = "kegg",qvalueCutoff = p,pvalueCutoff =p,pAdjustMethod = "fdr",universe=background,minGSSize = 2)
+  #ekegg <- enrichKEGG(genes,organism = "hsa",keyType = "kegg",qvalueCutoff = p,pvalueCutoff =p,pAdjustMethod = "fdr",universe=background,minGSSize = 2)
   epath <- enrichPathway(genes,organism = "human",qvalueCutoff = p,pvalueCutoff =p,pAdjustMethod = "fdr",universe=background,minGSSize = 2,readable= TRUE)
   ego <- enrichGO(genes,universe=background,OrgDb= org.Hs.eg.db,ont= o,pAdjustMethod = "fdr",qvalueCutoff  = p,pvalueCutoff =p,readable= TRUE,minGSSize = 2)
   
   if(nrow(edo) != 0){
     write.csv(as.data.frame(edo),file = paste0(dir_out,'/enrichDO_results/table_enrichDO_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
   }
-  if(!is.null(ekegg)){
-    if(nrow(ekegg) != 0){
-      write.csv(as.data.frame(ekegg),file = paste0(dir_out,'/enrichKEGG_results/table_enrichKEGG_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
-    }
-  }
+  # if(!is.null(ekegg)){
+  #   if(nrow(ekegg) != 0){
+  #     write.csv(as.data.frame(ekegg),file = paste0(dir_out,'/enrichKEGG_results/table_enrichKEGG_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
+  #   }
+  # }
   
   if(nrow(epath) != 0){
     write.csv(as.data.frame(epath),file = paste0(dir_out,'/enrichPathway_results/table_enrichPathway_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)

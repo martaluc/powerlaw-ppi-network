@@ -15,8 +15,10 @@ length(npl_studies) # 441
 dir_out <- 'output/'
 nstudy <- c(100,200,300)
 
+# number of iterations
 n <- 1000
 #n <- 2
+# number of threads
 tr <- 2
 network <- hippie_intact
 
@@ -110,8 +112,9 @@ studies_bait <- intersect(studies_bait,npl_studies)
 print(length(studies_bait))
 
 nstudy <- c(50,100,150)
+# number of iterations
 n <- 1000
-#n <- 2
+#number of threads
 tr <- 2
 
 cl <- makeCluster(5, outfile="out.log")
@@ -159,7 +162,7 @@ for(j in nstudy){
   colnames(f) <- c('pvalue_degree','pvalue_bait','num_inter','n_proteins','n_NA_degree','n_NA_bait')
   dir_out <- 'output'
   write.csv(f, file = paste0(dir_out,'/table_merge_',j,'NPLstudies_n',n,'_degree-bait_Intact2022.csv'),row.names = F)
-  
+
 }
 stopCluster(cl)
 
@@ -185,5 +188,4 @@ bait_degree_npl <- length(which(table$pvalue_degree < 0.1 & table$pvalue_bait < 
 
 matrix <- matrix(c(bait_degree_pl,bait_pl_degree_npl,bait_npl_degree_pl,bait_degree_npl), ncol = 2,nrow = 2)
 matrix
-fisher.test(matrix)
 print(fisher.test(matrix, alternative = 'greater'))
