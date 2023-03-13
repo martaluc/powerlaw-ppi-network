@@ -1,4 +1,4 @@
-# Emergence of power law distributions in protein-protein interaction networks through study bias
+# Emergence of power-law distributions in protein-protein interaction networks through study bias
 
 Scripts to reproduce our analyses of the power-law property in single study and aggregated protein-protein interaction (PPI) networks.
 
