@@ -1,6 +1,5 @@
 source('functions.R')
 library(data.table)
-library(formattable)
 library(clusterProfiler) # version 4.4.4
 
 
@@ -91,9 +90,10 @@ clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entre
 clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 0.05, n,'Y2H_hubs','BP','output')
 clusterProfiler_analyses(entrez_agg$entrezID[seq(1,n)],unique(entrez_agg$entrezID),p = 0.05, n,'Aggregated_network','BP','output')
 
-# run to know how many genes are annotated in databases for those sets where no significant enrichment has been found 
+# run to know how many genes are annotated in databases for those sets where no significant enrichment has been found (p = 1)
 # clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 1, n,'Y2H_hubs','BP','output')
 # clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entrezID),p = 1, n,'normalized_hubs','BP','output')
+
 #---------------------------------------------  
 # plot the results of the enrichment analyses
 #---------------------------------------------
