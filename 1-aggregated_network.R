@@ -125,7 +125,6 @@ ggsave(paste0('plots/plot_numInter_ratio_HIPPIEunionIntact2022.pdf'),height = 8,
 #------------------------------------------------------------------------
 
 table_study <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv')
-#table_study <- table_study[-which(table_study$num_inter == 0),]
 
 NotFancy <- function(l) {
   l <- format(l, scientific = F)
