@@ -1,7 +1,6 @@
 source('functions.R')
 library(doParallel)
 
-# ATTENTION: reproducing these results might take some days depending on the computational infrastructure.
 
 table <- read.csv('output/degree_distr_singleStudy_HIPPIEunionIntact2022_ninter_2_noNA_10.csv')
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')

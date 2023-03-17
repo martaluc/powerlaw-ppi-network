@@ -11,6 +11,11 @@ git clone https://github.com/martaluc/powerlaw-ppi-network.git
 #### Download data from Zenodo
 Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (databases.zip), put it in the GitHub repository and unzip it.
 
+#### Instructions
+```
+Rscript <name_script>
+```
+
 #### Description
 The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
