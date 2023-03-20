@@ -8,6 +8,7 @@ library(tidyr)
 library(DOSE)
 library(clusterProfiler)
 library(ReactomePA)
+library(igraph)
 
 ############################################################
 # function that adds publication IDs and method for each row
