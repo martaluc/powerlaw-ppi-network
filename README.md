@@ -13,7 +13,7 @@ Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (datab
 
 #### Instructions
 ```
-Rscript <name_script>
+Rscript <script_name.R>
 ```
 
 #### Description
