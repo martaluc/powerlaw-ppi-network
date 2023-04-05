@@ -203,7 +203,7 @@ index_edges_duplicates <- function(network,verbose = F){
 degree_wo_bidirEdges <- function(g){
   
   g_index <- index_edges_duplicates(g)
-  #eliminate bidirectional edges with the same pubmedID
+  #eliminate bidirectional edges
   if(length(g_index) > 0){
     g <- g[-g_index,]
     #print(paste0('there are ',length(g_index),' bidirectional edges'))
