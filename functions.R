@@ -244,7 +244,7 @@ check_powerLaw <- function(data, plot = F, plot_name ='', t = 1, xlabel, myseed=
     ggplot(xy, aes(x = x, y = y)) + geom_point() + geom_line(data = l, color = "red") +
       scale_x_continuous(trans='log2') + scale_y_continuous(trans='log2', labels = scaleFUN) + xlab(xlabel) + ylab('Frequency') +
       theme(axis.text = element_text(size = 10), axis.title = element_text(size = 10)) + theme_bw()
-    ggsave(paste0(plot_name,'.pdf'),height = 8, width = 8,units = 'cm')
+    ggsave(paste0(plot_name,'.pdf'),height = 6, width = 6,units = 'cm')
   }
   
   return(bs_p)

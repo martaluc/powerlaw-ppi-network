@@ -148,3 +148,16 @@ degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
 bait_usage$degree <- degree_hippie_intact$degree[match(bait_usage$bait_uniprot,degree_hippie_intact$proteins)]
 print('Pearson correlation between degree and bait usage')
 cor.test(bait_usage$bait_usage,bait_usage$degree, method = 'pearson') # 0.57
+
+#----------------------------------------------------------------------
+# distribution of number of publications
+# using data from Pubmed ( https://ftp.ncbi.nih.gov/gene/DATA/)
+#----------------------------------------------------------------------
+gene2pubmed <- read.csv('databases/gene2pubmed', sep = '\t')
+gene2pubmed_human <- gene2pubmed[which(gene2pubmed$X.tax_id == '9606'),]
+# count
+t <- as.data.frame(table(gene2pubmed_human$GeneID))
+p_t <- check_powerLaw(t$Freq, plot = T,'plots/plot_num_studies_gene2pubmed', t = 20,'Number of publications')
+print(paste0('the p-value of publication number distribution is ',p_t$p))
+print(paste0('xmin: ',xmin_estimated(t$Freq)))
+print(paste0('alpha: ',alpha_estimated(t$Freq)))

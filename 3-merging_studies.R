@@ -88,7 +88,7 @@ ggplot(table, aes(x=nstudy, y= pvalue)) +
            y = 1.2,
            label = table(table$nstudy[which(table$pvalue >= 0.1)])/1000,
            size = 3.6)
-ggsave(paste0('plots/','boxplot_mergingNPL.pdf'),height = 10, width = 10,units = 'cm')
+ggsave(paste0('plots/','boxplot_mergingNPL.pdf'),height = 6, width = 6,units = 'cm')
 
 
 #------------------------------------------------------------------------------------
