@@ -25,24 +25,6 @@ intact_bait_prey <- intact[which((intact$Experimental_roles_interactor_A == 'bai
 # frequency of interactions with bait and prey annotation
 nrow(unique(intact_bait_prey))/nrow(unique(intact))
 
-#--------------------------
-# bait usage distribution
-#--------------------------
-if(!dir.exists('output')){
-  dir.create('output')
-}
-print('Testing power-law hypotesis for bait usage distribution ...')
-
-baits <- get_bait_prey(intact,'bait')
-bait_usage <- calculate_bait_usage(intact,baits,'bait')
-bait_usage$normaliz_bait <- as.numeric(bait_usage$degree_bait)/as.numeric(bait_usage$bait_usage)
-write.csv(bait_usage, file = 'output/bait_usage_intact2022.csv',row.names = F)
-p_bait <- check_powerLaw(as.numeric(bait_usage$bait_usage),plot = T,'plots/plot_bait_usage_Intact2022', t = 20, 'Bait usage')
-print(paste0('the p-value of bait usage distribution is ',p_bait$p))
-print(paste0('xmin: ',xmin_estimated(as.numeric(bait_usage$bait_usage))))
-print(paste0('alpha is: ',alpha_estimated(as.numeric(bait_usage$bait_usage))))
-print(paste0('ntail is: ',length(which(as.numeric(bait_usage$bait_usage) >= xmin_estimated(as.numeric(bait_usage$bait_usage))))))
-
 #------------------------
 # merge HIPPIE and Intact
 #------------------------
@@ -74,6 +56,7 @@ if(!dir.exists('plots')){
 print('Testing power-law hypotesis for degree distribution ...')
 g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
 degree_hippie_intact <- degree_wo_bidirEdges(g)
+degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
 write.csv(degree_hippie_intact, file = 'output/degree_HIPPIEunionIntact2022.csv',row.names = F)
 
 p <- check_powerLaw(degree_hippie_intact$degree, plot = T, plot_name = 'plots/plot_degree_hippieIntact2022', t = 20, 'Degree')
@@ -82,6 +65,37 @@ print(paste0('the p-value of degree distribution is ',p$p)) #0.35
 print(paste0('xmin: ',xmin_estimated(degree_hippie_intact$degree)))
 print(paste0('alpha is: ',alpha_estimated(degree_hippie_intact$degree)))
 print(paste0('ntail is: ',length(which(degree_hippie_intact$degree >= xmin_estimated(degree_hippie_intact$degree)))))
+
+#--------------------------------------
+# bait usage distribution (Figure 3B)
+#--------------------------------------
+print('Testing power-law hypotesis for bait usage distribution ...')
+
+intact <- read.csv('databases/IntAct_afterFiltering.csv')
+baits <- get_bait_prey(intact,'bait')
+bait_usage <- calculate_bait_usage(intact,baits,'bait')
+#check the distribution of the bait usage
+p_bait <- check_powerLaw(as.numeric(bait_usage$bait_usage),plot = T,'plots/plot_bait_usage_Intact2022', t = 20, 'Bait usage')
+
+print(paste0('the p-value of bait usage distribution is ',p_bait$p))
+print(paste0('xmin: ',xmin_estimated(as.numeric(bait_usage$bait_usage))))
+print(paste0('alpha is: ',alpha_estimated(as.numeric(bait_usage$bait_usage))))
+print(paste0('ntail is: ',length(which(as.numeric(bait_usage$bait_usage) >= xmin_estimated(as.numeric(bait_usage$bait_usage))))))
+
+# add proteins with bait_usage = 0 and prey_usage >0
+preys <- get_bait_prey(intact,'prey')
+preys_noBaits <- setdiff(preys,baits)
+#retrieve symbol of the preys_noBaits
+preys_noBaits_symbol <- as.data.frame(mapIds(org.Hs.eg.db, keys = preys_noBaits, keytype = "UNIPROT", column= "SYMBOL"))
+colnames(preys_noBaits_symbol)[1] <- 'symbol'
+preys_noBaits_symbol <- preys_noBaits_symbol$symbol[match(preys_noBaits,rownames(preys_noBaits_symbol))]
+preys_noBaits_table <- data.frame(preys_noBaits,preys_noBaits_symbol,rep(0,length(preys_noBaits)),rep(0,length(preys_noBaits)))
+colnames(preys_noBaits_table) <- colnames(bait_usage)
+# add the preys_noBaits to the bait_usage table
+bait_usage <- rbind(bait_usage,preys_noBaits_table)
+# add degree in the aggregated network (hippie+intact)
+bait_usage$full_degree <- degree_hippie_intact$degree[match(bait_usage$bait_uniprot,degree_hippie_intact$proteins)]
+write.csv(bait_usage, file = 'output/bait_usage_intact2022.csv',row.names = F)
 
 #-----------------------------------------------------------------------
 # check number of interactions for each pubmedID
@@ -101,9 +115,9 @@ studies <- table$pubmed[which(table$num_inter >= n)]
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
 calculate_degree_singleStudy(hippie_intact,studies,table,label = 'HIPPIEunionIntact2022',dir = 'output',n,10,20)
 
-#-----------------------------------------------------------------
-# calculate the number of non-power and power law studies
-#-----------------------------------------------------------------
+#---------------------------------------------------------------------
+# calculate the number of non-power and power law studies (Figure 2B)
+#---------------------------------------------------------------------
 
 table <- read.csv('output/degree_distr_singleStudy_HIPPIEunionIntact2022_ninter_2_noNA_10.csv')
 table_numInter <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv')
@@ -140,14 +154,11 @@ ggsave('plots/plot_ppis_numStudies.pdf', height = 10, width = 10, units = 'cm')
 #---------------------------------------------------------
 
 bait_usage <- read.csv('output/bait_usage_intact2022.csv')
-hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
-g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
-degree_hippie_intact <- degree_wo_bidirEdges(g)
-degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
+#remove rows with bait_usage = 0
+bait_usage <- bait_usage[-which(bait_usage$bait_usage == 0),]
 
-bait_usage$degree <- degree_hippie_intact$degree[match(bait_usage$bait_uniprot,degree_hippie_intact$proteins)]
 print('Pearson correlation between degree and bait usage')
-cor.test(bait_usage$bait_usage,bait_usage$degree, method = 'pearson') # 0.57
+cor.test(bait_usage$bait_usage,bait_usage$full_degree, method = 'pearson') # 0.57
 
 #----------------------------------------------------------------------
 # distribution of number of publications

@@ -32,25 +32,19 @@ write.csv(degree_32296183, file = paste0(dir_out,'/Y2H_hubs.csv'), row.names = F
 
 # hubs normalized bait degree
 bait_table <- read.csv('output/bait_usage_intact2022.csv')
-hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
-g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
-degree_hippie_intact <- degree_wo_bidirEdges(g)
-degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
-bait_table$degree <- degree_hippie_intact$degree[match(bait_table$bait_uniprot,degree_hippie_intact$proteins)]
-bait_table$normaliz_degree <- bait_table$degree/bait_table$bait_usage
+bait_table <- bait_table[-which(bait_table$bait_usage == 0),]
+bait_table$normaliz_degree <- bait_table$full_degree/bait_table$bait_usage
 bait_table <- bait_table[order(-bait_table$normaliz_degree),]
 
 write.csv(bait_table, file = paste0(dir_out,'/hubs_normal_bait.csv'), row.names = F)
 
 # hubs of HIPPIEunionIntact
-# hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
-# g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
-# degree_hippie_intact <- degree_wo_bidirEdges(g)
-# degree_hippie_intact$proteins <- rownames(degree_hippie_intact)
+degree_hippie_intact <- read.csv('output/degree_HIPPIEunionIntact2022.csv')
 degree_hippie_intact <- degree_hippie_intact[order(-degree_hippie_intact$degree),]
 symbol <- as.data.frame(mapIds(org.Hs.eg.db, keys = degree_hippie_intact$proteins, keytype = "UNIPROT", column= "SYMBOL"))
 colnames(symbol)[1] <- 'symbol'
 degree_hippie_intact$symbol <- symbol$symbol[match(degree_hippie_intact$proteins,rownames(symbol))]
+rownames(degree_hippie_intact) <- seq(1,nrow(degree_hippie_intact))
 write.csv(degree_hippie_intact, file = paste0(dir_out,'/AggregatedNetwork_hubs.csv'), row.names = F)
 
 #------------------------------------------------------------------------------------
