@@ -46,9 +46,9 @@ if(length(d_index) > 0){
 print(paste0('Number of edges (aggregated network): ',nrow(hippie_intact_unique)))# 471693
 write.csv(hippie_intact, file = 'databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv', row.names = F)
 
-#-------------------------------------------
-# degree distribution of aggregated network
-#-------------------------------------------
+#--------------------------------------------------------
+# degree distribution of aggregated network (Figure 2A)
+#--------------------------------------------------------
 if(!dir.exists('plots')){
   dir.create('plots')
 }
@@ -135,7 +135,7 @@ ggplot(data=table_ratio, aes(x=num_inter, y=ratio)) +
 ggsave(paste0('plots/plot_numInter_ratio_HIPPIEunionIntact2022.pdf'),height = 8, width = 13,units = 'cm')
 
 #------------------------------------------------------------------------
-# histogram of PPIs number of studies
+# histogram of PPIs number of studies (Supplementary Figure 1)
 #------------------------------------------------------------------------
 
 table_study <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv')
@@ -163,6 +163,7 @@ cor.test(bait_usage$bait_usage,bait_usage$full_degree, method = 'pearson') # 0.5
 #----------------------------------------------------------------------
 # distribution of number of publications
 # using data from Pubmed ( https://ftp.ncbi.nih.gov/gene/DATA/)
+# (Figure 3C)
 #----------------------------------------------------------------------
 gene2pubmed <- read.csv('databases/gene2pubmed', sep = '\t')
 gene2pubmed_human <- gene2pubmed[which(gene2pubmed$X.tax_id == '9606'),]

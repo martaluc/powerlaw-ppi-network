@@ -88,9 +88,10 @@ clusterProfiler_analyses(entrez_agg$entrezID[seq(1,n)],unique(entrez_agg$entrezI
 # clusterProfiler_analyses(entrez_y2h$entrezID[seq(1,n)],unique(entrez_y2h$entrezID),p = 1, n,'Y2H_hubs','BP','output')
 # clusterProfiler_analyses(entrez_bait$entrezID[seq(1,n)],unique(entrez_bait$entrezID),p = 1, n,'normalized_hubs','BP','output')
 
-#---------------------------------------------  
+#-------------------------------------------------------------------------------  
 # plot the results of the enrichment analyses
-#---------------------------------------------
+# it generates the single plots of Figure 5 (at the end they are merged with inkscape)
+#-------------------------------------------------------------------------------
 
 dirs <- c('output/enrichGO_results','output/enrichDO_results','output/enrichPathway_results')
 for(d in dirs){
@@ -142,6 +143,7 @@ for(d in dirs){
 
 #----------------------------------------------------------------------
 # enrichment between schizophrenia/psychotic disorder and chaperones
+# (Supplementary figure 4)
 #----------------------------------------------------------------------
 library(DOSE)
 .initial <- function() {
@@ -230,6 +232,7 @@ for(t in term){
 #-------------------------------------------------------------------------
 # GTEx abundance - protein level
 # performing the GO analysis for the most abundant proteins
+# (Supplementary figure 3)
 #--------------------------------------------------------------------------
 
 library(readxl)

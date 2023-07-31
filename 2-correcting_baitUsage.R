@@ -33,9 +33,9 @@ table_power <- table_power[-which(table_power$n_baits == 1 & table_power$n_preys
 calculate_new_degree_table(intact,table_power,ninter,10,10,'output')
 
 
-#--------------------------------------------------------
-# wilcoxon test for testing size balance difference
-#-------------------------------------------------------
+#---------------------------------------------------------------
+# wilcoxon test for testing size balance difference (Figure 4C)
+#---------------------------------------------------------------
 ninter <- 2
 final_table_noNA <- read.csv(paste0('output/degree_bis_table_ninter',ninter,'_noNA_10.csv'))
 i <- 200
