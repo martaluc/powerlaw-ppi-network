@@ -825,3 +825,34 @@ clusterProfiler_analyses <- function(genes,background,p = 0.05,n,label,o,dir_out
     write.csv(as.data.frame(ego),file = paste0(dir_out,'/enrichGO_results/table_enrichGO_',label,'_',n,'_qvalue',p,'.csv'),row.names = F)
   }
 }
+
+##########################################################################################################################
+# input: 
+# - network: IntAct (it has to include the Experimental_roles_interactor_A and Experimental_roles_interactor_B columns
+#   with the bait/prey annotation)
+# - degree: dataframe with the degree and proteins columns
+# output:
+# dataframe with uniprotIDs, symbols, degree_bait (= number of interactions where the protein has been studied as a bait),
+# degree_prey (= number of interactions where the protein has been studied as a prey), 
+# total_degree (= number of total interactions in the network)
+##########################################################################################################################
+
+get_bait_prey_total_degree <- function(network,degree){
+  
+  baits <- get_bait_prey(network,'bait')
+  bait_table <- calculate_bait_usage(network,baits,'bait')
+  bait_table$bait_usage <- NULL
+  colnames(bait_table)[c(1,2)] <- c('uniprot','symbol')
+  
+  preys <- get_bait_prey(network,'prey')
+  prey_table <- calculate_bait_usage(network,preys,'prey')
+  prey_table$prey_usage <- NULL
+  colnames(prey_table)[c(1,2)] <- c('uniprot','symbol')
+  
+  final <- merge(bait_table,prey_table, all=T)
+  final$degree_bait[is.na(final$degree_bait)] <- 0
+  final$degree_prey[is.na(final$degree_prey)] <- 0
+  #add total degree
+  final$total_degree <- degree$degree[match(final$uniprot,degree$proteins)]
+  return(final)
+}

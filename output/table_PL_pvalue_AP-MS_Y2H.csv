@@ -1,0 +1,7 @@
+"method","type","pvalue","xmin","alpha"
+"AP_MS","bait_degree",0.01,50,2.61401753485344
+"AP_MS","prey_degree",0.05,55,3.92057502375476
+"AP_MS","total_degree",0.36,59,2.90183557459884
+"Y2H","bait_degree",0.71,52,3.09905891745344
+"Y2H","prey_degree",0,17,2.34206459145389
+"Y2H","total_degree",0,63,2.96417927484163
