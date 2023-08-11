@@ -180,3 +180,42 @@ alpha <- c(alpha_estimated(as.numeric(final$degree_bait[-which(final$degree_bait
 PL_table <- data.frame(rep('AP-MS_Y2H_combined',3),c('bait_degree','prey_degree','total_degree'),pvalue,xmin,alpha)
 colnames(PL_table)[c(1,2)] <- c('method','type')
 write.csv(PL_table,'output/table_PL_pvalue_AP-MS_Y2H_combined.csv',row.names = F)
+
+#-------------------------------------------------------------------------------------
+# test Sandor file
+#--------------------------------------------------------------------------------
+d <- readLines('../powerlaw-ppi-network_plus/ergebnis.txt',)
+length(d)
+
+names <- c()
+pvalue <- c()
+xmin <- c()
+alpha <- c()
+n_NA <- c()
+
+for(i in c(9,13,17,21,25)){
+  print(i)
+  if(length(grep('-',d[i])) != 0){
+    print(i)
+    f <- gsub('\\]','',d[i+1])
+    f <- gsub('\\[','',f)
+    f <- as.numeric(unlist(strsplit(f,', ')))
+    if(length(which(f==0)) != 0){
+      bs <- check_powerLaw(f[-which(f==0)],plot=T,plot_name = paste0('plots/plot_',d[i-1]), t = 20, 'Degree')
+      xmin <- c(xmin,xmin_estimated(f[-which(f==0)]))
+      alpha <- c(alpha,alpha_estimated(f[-which(f==0)]))
+    }else{
+      bs <- check_powerLaw(f,plot=T,plot_name = paste0('plots/plot_',d[i-1]), t = 20, 'Degree')
+      xmin <- c(xmin,xmin_estimated(f))
+      alpha <- c(alpha,alpha_estimated(f))
+    }
+    
+    names <- c(names,d[i-1])
+    pvalue <- c(pvalue,bs$p)
+    n_NA <- c(n_NA,length(which(is.na(bs$bootstraps$xmin) == T)))
+  }
+}
+
+table <- data.frame(names,pvalue,xmin,alpha,n_NA)
+table$n_NA <- NULL
+write.csv(table,'output/table_PL_pvalue_ergebnis.csv',row.names = F)
