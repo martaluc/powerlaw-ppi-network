@@ -15,6 +15,11 @@ Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (datab
 ```
 Rscript <script_name.R>
 ```
+or if you want to run the scripts in background
+
+```
+nohup Rscript <script_name.R> &
+```
 
 #### Description
 The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
