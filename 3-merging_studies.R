@@ -1,6 +1,13 @@
 source('functions.R')
 library(doParallel)
 
+#-------------------------------------------------------------------------------------------------------------------------------
+# ATTENTION! Before running this script, please do the following:
+# 1) Check the number of CPUs used in the 'makeCluster' function which parallelizes the job. 
+#   Take into account also that the number of threads (tr) used by 'check_powerLaw' function is set to 2 (line 28 and 124). 
+#   Then the total number of CPUs used by this script is: tr*<number of CPUs in makeCluster>.
+# 2) Eventually change the number of CPUs according to the available resources on your machine.
+#-------------------------------------------------------------------------------------------------------------------------------
 
 table <- read.csv('output/degree_distr_singleStudy_HIPPIEunionIntact2022_ninter_2_noNA_10.csv')
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
@@ -17,7 +24,7 @@ nstudy <- c(100,200,300)
 # number of iterations
 n <- 1000
 #n <- 2
-# number of threads
+# number of threads used by check_powerLaw function
 tr <- 2
 network <- hippie_intact
 
@@ -93,9 +100,9 @@ ggsave(paste0('plots/','boxplot_mergingNPL.pdf'),height = 6, width = 6,units = '
 
 #------------------------------------------------------------------------------------
 # merge random non-PL studies (without selecting studies with specific features) 
-# and calculate degree and bait distribution (using only studies with bait 
-# annotations)
+# and calculate degree and bait distribution (using only studies with bait annotations)
 #------------------------------------------------------------------------------------
+
 intact <- read.csv('databases/IntAct_afterFiltering.csv')
 intact_bait <- intact[which(intact$Experimental_roles_interactor_A == 'bait' | intact$Experimental_roles_interactor_B == 'bait'),]
 studies_bait <- unique(intact_bait$Publication_Identifiers)

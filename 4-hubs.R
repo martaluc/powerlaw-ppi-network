@@ -4,7 +4,7 @@ library(clusterProfiler) # version 4.4.4
 
 
 #---------------------------------------------
-# select preys in mass spec studies
+# select preys in Mass Spectrometry studies
 #---------------------------------------------
 intact <- read.csv('databases/IntAct_afterFiltering.csv')
 prey_table <- get_prey_massSpec(intact)
@@ -48,7 +48,7 @@ rownames(degree_hippie_intact) <- seq(1,nrow(degree_hippie_intact))
 write.csv(degree_hippie_intact, file = paste0(dir_out,'/AggregatedNetwork_hubs.csv'), row.names = F)
 
 #------------------------------------------------------------------------------------
-# clusterProfile - enrichment analyses
+# clusterProfiler - enrichment analyses of the top-n hubs
 #------------------------------------------------------------------------------------
 
 if(!dir.exists('output/enrichDO_results')){
@@ -142,7 +142,7 @@ for(d in dirs){
 
 
 #----------------------------------------------------------------------
-# enrichment between schizophrenia/psychotic disorder and chaperones
+# enrichment between schizophrenia/psychotic disorder genes and chaperones
 # (Supplementary figure 4)
 #----------------------------------------------------------------------
 library(DOSE)
@@ -231,8 +231,8 @@ for(t in term){
 
 #-------------------------------------------------------------------------
 # GTEx abundance - protein level
-# performing the GO analysis for the most abundant proteins
-# (Supplementary figure 3)
+# performing the GO enrichment analysis for the most abundant proteins
+# (Supplementary Figure 3)
 #--------------------------------------------------------------------------
 
 library(readxl)

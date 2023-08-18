@@ -184,7 +184,7 @@ write.csv(PL_table,'output/table_PL_pvalue_AP-MS_Y2H_combined.csv',row.names = F
 #-------------------------------------------------------------------------------------
 # test Sandor file
 #--------------------------------------------------------------------------------
-d <- readLines('../powerlaw-ppi-network_plus/ergebnis.txt',)
+d <- readLines('../powerlaw-ppi-network_plus/ergebnis.txt')
 length(d)
 
 names <- c()

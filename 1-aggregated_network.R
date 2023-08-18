@@ -1,5 +1,10 @@
 source('functions.R')
 library(data.table)
+#-------------------------------------------------------------------------------------------------------------------------------
+# ATTENTION! Before running this script, please do the following:
+# 1) Check the number of CPUs (we used 20), set in the following functions: 'check_powerLaw' and 'calculate_degree_singleStudy'
+# 2) Eventually change the number of CPUs according to the available resources on your machine.
+#-------------------------------------------------------------------------------------------------------------------------------
 
 #------------------
 # read HIPPIE
@@ -26,7 +31,7 @@ intact_bait_prey <- intact[which((intact$Experimental_roles_interactor_A == 'bai
 nrow(unique(intact_bait_prey))/nrow(unique(intact))
 
 #------------------------
-# merge HIPPIE and Intact
+# merge HIPPIE and IntAct
 #------------------------
 
 hippie <- hippie[,c('IDs_interactor_A','IDs_interactor_B','Publication_Identifiers', 'Interaction_detection_methods')]
@@ -74,7 +79,7 @@ print('Testing power-law hypotesis for bait usage distribution ...')
 intact <- read.csv('databases/IntAct_afterFiltering.csv')
 baits <- get_bait_prey(intact,'bait')
 bait_usage <- calculate_bait_usage(intact,baits,'bait')
-#check the distribution of the bait usage
+# check the PL distribution of the bait usage
 p_bait <- check_powerLaw(as.numeric(bait_usage$bait_usage),plot = T,'plots/plot_bait_usage_Intact2022', t = 20, 'Bait usage')
 
 print(paste0('the p-value of bait usage distribution is ',p_bait$p))
@@ -85,7 +90,7 @@ print(paste0('ntail is: ',length(which(as.numeric(bait_usage$bait_usage) >= xmin
 # add proteins with bait_usage = 0 and prey_usage >0
 preys <- get_bait_prey(intact,'prey')
 preys_noBaits <- setdiff(preys,baits)
-#retrieve symbol of the preys_noBaits
+# retrieve symbols of the preys_noBaits
 preys_noBaits_symbol <- as.data.frame(mapIds(org.Hs.eg.db, keys = preys_noBaits, keytype = "UNIPROT", column= "SYMBOL"))
 colnames(preys_noBaits_symbol)[1] <- 'symbol'
 preys_noBaits_symbol <- preys_noBaits_symbol$symbol[match(preys_noBaits,rownames(preys_noBaits_symbol))]
@@ -109,6 +114,7 @@ write.csv(table, file = 'output/table_singleStudy_numInter_HIPPIEunionIntact2022
 #----------------------------------------------------
 # calculate the degree distribution of single study
 #----------------------------------------------------
+
 table <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv', header = T)
 n <- 2
 studies <- table$pubmed[which(table$num_inter >= n)]
@@ -116,7 +122,7 @@ hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mappi
 calculate_degree_singleStudy(hippie_intact,studies,table,label = 'HIPPIEunionIntact2022',dir = 'output',n,10,20)
 
 #---------------------------------------------------------------------
-# calculate the number of non-power and power law studies (Figure 2B)
+# calculate the number of NPL and PL studies (Figure 2B)
 #---------------------------------------------------------------------
 
 table <- read.csv('output/degree_distr_singleStudy_HIPPIEunionIntact2022_ninter_2_noNA_10.csv')
