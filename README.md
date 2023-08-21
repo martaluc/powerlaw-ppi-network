@@ -51,4 +51,5 @@ The results of the scripts are saved in the `output/` folder and the plots in th
 
 ###### Notes
 • Before running the scripts, make sure to review the number of CPUs specified in the scripts. If needed, modify the CPUs settings based on the available computational resources on your machine.
+
 • Whenever possible, it is recommended to use the exact number of threads specified in the code. This ensures the consistency of p-values, particularly when testing for the power law property.
