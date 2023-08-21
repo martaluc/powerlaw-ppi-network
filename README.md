@@ -21,7 +21,9 @@ After pulling the ma10r02t90a/powerlaw-ppi image, you can run the Docker contain
 sudo docker run -it -e DISPLAY --name ppi -v /your/path/to/powerlaw-ppi-network/:/powerlaw-ppi-network ma10r02t90a/powerlaw-ppi /bin/bash
 ```
 `-it` specifies an interactive terminal
+
 `--name` specifies the name of the container (you can also omit it)
+
 `ma10r02t90a/powerlaw-ppi` image name or image ID. Type `sudo docker images` to get the image ID.
 
 #### Instructions
