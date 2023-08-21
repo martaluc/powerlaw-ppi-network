@@ -9,7 +9,7 @@ git clone https://github.com/martaluc/powerlaw-ppi-network.git
 ```
 
 #### Download data from Zenodo
-Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (databases.zip), put it in the GitHub repository and unzip it.
+Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (databases.zip), move it in the GitHub repository and unzip it.
 
 #### Docker
 1) Download Docker, following the instructions described [here](https://docs.docker.com/engine/). Keep in mind that you will need root permissions to both install and run Docker. Then you can pull the Docker image from [Docker Hub](https://hub.docker.com/r/ma10r02t90a/powerlaw-ppi):
