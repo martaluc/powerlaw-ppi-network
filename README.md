@@ -41,13 +41,13 @@ Replace `<script_name.R>` with the actual name of the R script you want to run.
 ### Description
 The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
-1-aggregated_network.R calculates the degree and the bait distribution of our aggregated PPI network (Figure 2A and Figure 3B) and the distribution of publication number (Figure 3C). It also tests the power-law property of each single study (Figure 2B).
+`1-aggregated_network.R` calculates the degree and the bait distribution of our aggregated PPI network (Figure 2A and Figure 3B) and the distribution of publication number (Figure 3C). It also tests the power-law property of each single study (Figure 2B).
 
-2-correcting_baitUsage.R analyzes if the asymmetric design (i.e. number of baits and preys) affects the power-law property (Figure 4B and C).
+`2-correcting_baitUsage.R` analyzes if the asymmetric design (i.e. number of baits and preys) affects the power-law property (Figure 4B and C).
 
-3-merging_studies.R tests if the power-law property emerges from the aggregation of non-power law studies (Figure 3A).
+`3-merging_studies.R` tests if the power-law property emerges from the aggregation of non-power law studies (Figure 3A).
 
-4-hubs.R detects the hubs and performs the functional and disease enrichment analyses (Figure 5).
+`4-hubs.R` detects the hubs and performs the functional and disease enrichment analyses (Figure 5).
 
 The results of the scripts are saved in the `output/` folder and the plots in the `plots/` folder.
 
