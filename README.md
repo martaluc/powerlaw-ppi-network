@@ -12,29 +12,28 @@ git clone https://github.com/martaluc/powerlaw-ppi-network.git
 Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (databases.zip), put it in the GitHub repository and unzip it.
 
 #### Docker
-Download Docker, following the instructions described [here](https://docs.docker.com/engine/). Keep in mind that you will need root permissions to both install and run Docker. Then you can pull the Docker image:
+1) Download Docker, following the instructions described [here](https://docs.docker.com/engine/). Keep in mind that you will need root permissions to both install and run Docker. Then you can pull the Docker image from [Docker Hub](https://hub.docker.com/r/ma10r02t90a/powerlaw-ppi):
 ```
 docker pull ma10r02t90a/powerlaw-ppi
 ```
-After pulling the ma10r02t90a/powerlaw-ppi image, you can run the Docker container in a interactive way:
+2) After pulling the `ma10r02t90a/powerlaw-ppi` image, you can run the Docker container interactively using the following command:
 ```
 sudo docker run -it -e DISPLAY --name ppi -v /your/path/to/powerlaw-ppi-network/:/powerlaw-ppi-network ma10r02t90a/powerlaw-ppi /bin/bash
 ```
-`-it` specifies an interactive terminal
+`-it` specifies an interactive terminal,allowing you to interact with the container.
 
-`--name` specifies the name of the container (you can also omit it)
+`--name ppi` assigns the name "ppi" to the container. This flag can be omitted if you prefer.
 
-`ma10r02t90a/powerlaw-ppi` image name or image ID. Type `sudo docker images` to get the image ID.
+`-v /your/path/to/powerlaw-ppi-network/:/powerlaw-ppi-network` mounts the directory from your local system (replace `/your/path/to/powerlaw-ppi-network/` with the actual path) into the container's `/powerlaw-ppi-network` directory. This allows you to share files between your local system and the container.
 
-#### Instructions
+`ma10r02t90a/powerlaw-ppi` specifies the image name that you pulled from Docker Hub.
+
+3) Once you are inside the container, move to the folder of interest with `cd /powerlaw-ppi-network` and run the R scripts with the following command:
+
 ```
 Rscript <script_name.R>
 ```
-or if you want to run the scripts in background
-
-```
-nohup Rscript <script_name.R> &
-```
+Replace `<script_name.R>` with the actual name of the R script you want to run.
 
 #### Description
 The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
@@ -51,4 +50,5 @@ The results of the scripts are saved in the `output/` folder and the plots in th
 
 
 ###### Notes
-Use the same number of threads as specified in the code to obtain the exact same p-values (when testing the power law property).
+• Before running the scripts, make sure to review the number of CPUs specified in the scripts. If needed, modify the CPUs settings based on the available computational resources on your machine.
+• Whenever possible, it is recommended to use the exact number of threads specified in the code. This ensures the consistency of p-values, particularly when testing for the power law property.
