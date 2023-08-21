@@ -11,6 +11,19 @@ git clone https://github.com/martaluc/powerlaw-ppi-network.git
 #### Download data from Zenodo
 Download [here](https://doi.org/10.5281/zenodo.7695121) the required data (databases.zip), put it in the GitHub repository and unzip it.
 
+#### Docker
+Download Docker, following the instructions described [here](https://docs.docker.com/engine/). Keep in mind that you will need root permissions to both install and run Docker. Then you can pull the Docker image:
+```
+docker pull ma10r02t90a/powerlaw-ppi
+```
+After pulling the ma10r02t90a/powerlaw-ppi image, you can run the Docker container in a interactive way:
+```
+sudo docker run -it -e DISPLAY --name ppi -v /your/path/to/powerlaw-ppi-network/:/powerlaw-ppi-network ma10r02t90a/powerlaw-ppi /bin/bash
+```
+`-it` specifies an interactive terminal
+`--name` specifies the name of the container (you can also omit it)
+`ma10r02t90a/powerlaw-ppi` image name or image ID. Type `sudo docker images` to get the image ID.
+
 #### Instructions
 ```
 Rscript <script_name.R>
