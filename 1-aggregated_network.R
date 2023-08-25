@@ -119,7 +119,7 @@ table <- read.csv('output/table_singleStudy_numInter_HIPPIEunionIntact2022.csv',
 n <- 2
 studies <- table$pubmed[which(table$num_inter >= n)]
 hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
-calculate_degree_singleStudy(hippie_intact,studies,table,label = 'HIPPIEunionIntact2022',dir = 'output',n,10,20)
+calculate_degree_singleStudy(hippie_intact,studies,table,label = 'HIPPIEunionIntact2022',dir = 'output',n,nRemove=10,tr=20)
 
 #---------------------------------------------------------------------
 # calculate the number of NPL and PL studies (Figure 2B)

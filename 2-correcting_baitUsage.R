@@ -15,7 +15,7 @@ write.csv(table_intact, file = paste0('output/','table_singleStudy_numInter_Inta
 ninter <- 2
 table_intact <- read.csv('output/table_singleStudy_numInter_Intact.csv')
 studies_intact <- table_intact$pubmed[which(table_intact$num_inter >= ninter)]
-calculate_degree_singleStudy(intact,studies_intact,table_intact,label = 'Intact',dir = 'output',ninter,10,10)
+calculate_degree_singleStudy(intact,studies_intact,table_intact,label = 'Intact',dir = 'output',ninter,nRemove=10,tr=10)
 
 #--------------------------------------------------------
 # add the number of baits and preys in the previous table
@@ -36,7 +36,7 @@ table_power <- table_study[which(table_study$pvalue >= 0.1),]
 table_power <- table_power[-which(table_power$n_baits == 0 & table_power$n_preys == 0),]
 # eliminate studies with 1 bait and 1 prey
 table_power <- table_power[-which(table_power$n_baits == 1 & table_power$n_preys == 1),]
-calculate_new_degree_table(intact,table_power,ninter,10,10,'output')
+calculate_new_degree_table(intact,table_power,ninter,nRemove=10,tr=10,'output')
 
 
 #---------------------------------------------------------------
