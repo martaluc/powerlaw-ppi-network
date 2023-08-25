@@ -221,3 +221,100 @@ for(i in c(9,13,17,21,25)){
 table <- data.frame(names,pvalue,xmin,alpha,n_NA)
 table$n_NA <- NULL
 write.csv(table,'output/table_PL_pvalue_ergebnis.csv',row.names = F)
+
+#------------------------------------------------------------------------
+# correlation between degree and protein mass (Supplementary Figure 7A)
+#------------------------------------------------------------------------
+hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
+method <- 'Mass_spec'
+#method <- 'Y2H'
+
+if(method == 'Mass_spec'){
+  index <- grep('coimmunoprecipitation|pull down|tandem affinity purification|mass spectrometry|copurification|affinity chromatography technology',hippie_intact$Interaction_detection_methods)
+}else{
+  index <- grep('two hybrid',hippie_intact$Interaction_detection_methods)
+}
+
+hippie_intact <- hippie_intact[index,]
+#degree
+g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
+degree <- degree_wo_bidirEdges(g)
+degree$proteins <- rownames(degree)
+
+uniprot_table <- read.csv('databases/uniprot_idmapping_mass.tsv', sep = '\t')
+mass_table <- uniprot_table[,c('From','Mass')]
+
+degree$mass <- mass_table$Mass[match(degree$proteins,mass_table$From)]
+# remove proteins with NA mass
+degree <- degree[-which(is.na(degree$mass) == T),]
+
+library("ggpubr")
+ggscatter(degree, x = "mass", y = "degree", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          xlab = "Mass(Da)", ylab = "Degree",cor.coef.size = 5) + scale_x_continuous(trans='log2')+
+  theme(text = element_text(size = 10), axis.text = element_text(size=10), axis.title = element_text(size=12)) 
+ggsave(paste0('plots/scatterplot_spearman_correlation_mass-degree_',method,'.pdf'),height = 8, width = 8,units = 'cm')
+
+#----------------------------------------------------------------------------------
+# correlation between degree and protein abundance (Supplementary Figure 7B)
+#----------------------------------------------------------------------------------
+gtex_protein_relative_abun <- read_excel('databases/Table_S1_gene_info_at_protein_level.xlsx', sheet = 8)
+colnames(gtex_protein_relative_abun) <- gtex_protein_relative_abun[1,]
+gtex_protein_relative_abun <- gtex_protein_relative_abun[-1,] 
+
+gtex_protein_relative_abun[gtex_protein_relative_abun == "NA"] <- NA
+
+# calculate the median abundance for each protein
+Median <- c()
+Mean <- c()
+n_NA <- c()
+for(i in seq(1,nrow(gtex_protein_relative_abun))){
+  row <- as.numeric(gtex_protein_relative_abun[i,seq(3,ncol(gtex_protein_relative_abun))])
+  n_NA <- c(n_NA,length(which(is.na(row) == T))/length(row))
+  Median <- c(Median,median(row, na.rm = T))
+  Mean <- c(Mean,mean(row,na.rm = T))
+}
+
+length(Median)
+dim(gtex_protein_relative_abun)
+table_median_protein <- data.frame(gtex_protein_relative_abun$gene.id,Median,Mean,n_NA)
+colnames(table_median_protein)[1] <- 'Gene_ID'
+# remove genes with more than 50% of NAs
+table_median_protein <- table_median_protein[-which(table_median_protein$n_NA > 0.5),]
+dim(table_median_protein)
+
+uniprot <- as.data.frame(mapIds(org.Hs.eg.db, keys = table_median_protein$Gene_ID, keytype = "ENSEMBL", column= "UNIPROT"))
+colnames(uniprot)[1] <- 'uniprot'
+uniprot$ensembl <- rownames(uniprot)
+
+table_median_protein$uniprot <- uniprot$uniprot[match(table_median_protein$Gene_ID,uniprot$ensembl)]
+
+# select specific studies
+hippie_intact <- read.csv('databases/HIPPIE_union_Intact2022_afterReviewed_mapping.csv')
+method <- 'Mass_spec'
+#method <- 'Y2H'
+
+if(method == 'Mass_spec'){
+  index <- grep('coimmunoprecipitation|pull down|tandem affinity purification|mass spectrometry|copurification|affinity chromatography technology',hippie_intact$Interaction_detection_methods)
+}else{
+  index <- grep('two hybrid',hippie_intact$Interaction_detection_methods)
+}
+
+hippie_intact <- hippie_intact[index,]
+#degree
+g <- unique(hippie_intact[,c('IDs_interactor_A','IDs_interactor_B')])
+degree <- degree_wo_bidirEdges(g)
+degree$proteins <- rownames(degree)
+
+degree$Median <- table_median_protein$Median[match(degree$proteins,table_median_protein$uniprot)]
+# remove proteins with median = NA
+degree <- degree[-which(is.na(degree$Median) == T),]
+
+ggscatter(degree, x = "Median", y = "degree", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          xlab = "Protein abundance median", ylab = "Degree", cor.coef.size = 5) +
+  theme(text = element_text(size = 10), axis.text = element_text(size=10), axis.title = element_text(size=12))
+ggsave(paste0('plots/scatterplot_spearman_correlation_proteomics-degree_',method,'.pdf'),height = 8, width = 8,units = 'cm')
+
