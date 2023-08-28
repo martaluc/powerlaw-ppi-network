@@ -90,7 +90,7 @@ clusterProfiler_analyses(entrez_agg$entrezID[seq(1,n)],unique(entrez_agg$entrezI
 
 #-------------------------------------------------------------------------------  
 # plot the results of the enrichment analyses
-# it generates the single plots of Figure 5 (at the end they are merged with inkscape)
+# it generates the single plots of Figure 6 (at the end they are merged with inkscape)
 #-------------------------------------------------------------------------------
 
 dirs <- c('output/enrichGO_results','output/enrichDO_results','output/enrichPathway_results')

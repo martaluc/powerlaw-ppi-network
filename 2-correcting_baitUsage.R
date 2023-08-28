@@ -40,7 +40,7 @@ calculate_new_degree_table(intact,table_power,ninter,nRemove=10,tr=10,'output')
 
 
 #---------------------------------------------------------------
-# wilcoxon test for testing size balance difference (Figure 4C)
+# wilcoxon test for testing size balance difference (Figure 5C)
 #---------------------------------------------------------------
 ninter <- 2
 final_table_noNA <- read.csv(paste0('output/degree_bis_table_ninter',ninter,'_noNA_10.csv'))
@@ -49,7 +49,7 @@ final_table_noNA <- final_table_noNA[which(final_table_noNA$n_inter >= i),]
 wilcox_test_ratio(final_table_noNA,'boxplot_ratio_bait_prey_or_prey_bait_noNA_10',i,'plots')
 
 #---------------------------------------------------------------------------
-# distribution of the ratio between bait and prey in PL studies (Figure 4B)
+# distribution of the ratio between bait and prey in PL studies (Figure 5B)
 #---------------------------------------------------------------------------
 ninter <- 2
 final_table_noNA <- read.csv(paste0('output/degree_bis_table_ninter',ninter,'_noNA_10.csv'))
