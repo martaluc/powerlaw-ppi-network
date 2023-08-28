@@ -43,11 +43,13 @@ The code was run on Ubuntu (20.04.5 LTS) using R (4.2.2).
 
 `1-aggregated_network.R` calculates the degree and the bait distribution of our aggregated PPI network (Figure 2A and Figure 3B) and the distribution of publication number (Figure 3C). It also tests the power-law property of each single study (Figure 2B).
 
-`2-correcting_baitUsage.R` analyzes if the asymmetric design (i.e. number of baits and preys) affects the power-law property (Figure 4B and C).
+`2-correcting_baitUsage.R` analyzes if the asymmetric design (i.e. number of baits and preys) affects the power-law property (Figure 5B and C).
 
 `3-merging_studies.R` tests if the power-law property emerges from the aggregation of non-power law studies (Figure 3A).
 
-`4-hubs.R` detects the hubs and performs the functional and disease enrichment analyses (Figure 5).
+`4-hubs.R` detects the hubs and performs the functional and disease enrichment analyses (Figure 6).
+
+`5-get_degree_AS-MS_Y2H.R` tests if the degree of simulated network is power-law (Figure 4).
 
 The results of the scripts are saved in the `output/` folder and the plots in the `plots/` folder.
 
@@ -55,4 +57,4 @@ The results of the scripts are saved in the `output/` folder and the plots in th
 ##### Notes
 • Before running the scripts, make sure to review the number of CPUs specified in the scripts. If needed, modify the CPUs settings based on the available computational resources on your machine.
 
-• Whenever possible, it is recommended to use the exact number of threads specified in the code. This ensures the consistency of p-values, particularly when testing for the power law property.
+• Whenever possible, it is recommended to use the exact number of threads specified in the code. This ensures the consistency of p-values, particularly when testing for the power-law property.
